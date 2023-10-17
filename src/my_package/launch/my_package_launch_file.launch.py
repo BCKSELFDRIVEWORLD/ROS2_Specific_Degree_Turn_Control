@@ -6,7 +6,7 @@ def generate_launch_description():
         
         Node(
             package='my_package',
-            executable='move_turtlebot3_left',
+            executable='rotate',
             output='screen'),
             remappings=[('/SR6T1/', '/SR6T2/')]  
     ])
