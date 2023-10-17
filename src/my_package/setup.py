@@ -23,7 +23,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'launch = my_package.move_left_turtlebot3:main',
+            'rotate = my_package.move_left_turtlebot3:main',
 
         ],
     },
