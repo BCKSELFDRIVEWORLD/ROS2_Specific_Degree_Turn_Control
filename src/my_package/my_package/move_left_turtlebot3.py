@@ -22,7 +22,6 @@ class TurningNode(Node):
         if self.is_turning:
             current_angle = math.atan2(2 * (msg.pose.pose.orientation.z * msg.pose.pose.orientation.w),
                                         1 - 2 * (msg.pose.pose.orientation.z ** 2))
-
             if self.target_angle is not None and abs(current_angle - self.target_angle) < math.radians(5):
                 self.stop_turning()
                 self.get_logger().info("Waiting for 3 seconds")
@@ -67,9 +66,11 @@ def main(args=None):
     turning_node.turn_direction()
     while rclpy.ok():
         try:
-            rclpy.spin_once(turning_node, timeout_sec=1.0)
+            rclpy.spin(turning_node)
         except KeyboardInterrupt:
             break
+
+    turning_node.turn_direction()
 
 
     turning_node.destroy_node()
