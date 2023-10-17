@@ -23,8 +23,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'move_turtlebot3_left = my_package.move_left_turtlebot3:main',
-            'move_turtlebot3_withoutodom = my_package.move_without_od:main'
+            'launch = my_package.move_left_turtlebot3:main',
 
         ],
     },
