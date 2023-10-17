@@ -1,2 +1,2 @@
 # rotate
-rotate first 30 degree left than other side
+turn first 30 degree left than turn other side
