@@ -1,2 +1,1 @@
-# rotate
-turn first 30 degree left than turn other side
+ This ROS2 node is designed to control the rotation of a robot by a specific degree angle. The rotation process is performed according to the specified angle value, and the purpose of the project is to manage this rotation process precisely 
