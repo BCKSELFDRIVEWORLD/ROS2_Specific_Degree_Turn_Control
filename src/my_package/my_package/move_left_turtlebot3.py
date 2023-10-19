@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
+
+
 import rclpy
 from rclpy.node import Node
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist
 import math
+import signal
+import sys
 import time
 
 class TurningNode(Node):
@@ -21,7 +25,7 @@ class TurningNode(Node):
     def odom_callback(self, msg):
         if self.is_turning:
             current_angle = math.atan2(2 * (msg.pose.pose.orientation.z * msg.pose.pose.orientation.w),
-                                        1 - 2 * (msg.pose.pose.orientation.z ** 2))
+                                        1 - 2 * ((msg.pose.pose.orientation.z ** 2) + (msg.pose.pose.orientation.y ** 2)))
             if self.target_angle is not None and abs(current_angle - self.target_angle) < math.radians(5):
                 self.stop_turning()
                 self.get_logger().info("Waiting for 3 seconds")
@@ -42,6 +46,7 @@ class TurningNode(Node):
 
     def stop_turning(self):
         msg = Twist()
+        msg.linear.x = 0.0
         msg.angular.z = 0.0
         self.publisher_.publish(msg)
         self.get_logger().info('Turning stopped')
@@ -59,22 +64,25 @@ class TurningNode(Node):
     def get_current_orientation(self):
         return self.current_orientation
 
+def signal_handler(sig, frame):
+    print('Baybayyy!')
+    stop_msg = Twist()
+    stop_msg.angular.z = 0.0
+    turning_node.publisher_.publish(stop_msg)
+    rclpy.shutdown()
+    sys.exit(0)
+
 def main(args=None):
     rclpy.init(args=args)
+    global turning_node
     turning_node = TurningNode()
-
-    turning_node.turn_direction()
-    while rclpy.ok():
-        try:
-            rclpy.spin(turning_node)
-        except KeyboardInterrupt:
-            break
-
     turning_node.turn_direction()
 
-
-    turning_node.destroy_node()
+    signal.signal(signal.SIGINT, signal_handler)
+    print('Press Ctrl+C to exit')
+    rclpy.spin(turning_node)
     rclpy.shutdown()
+    turning_node.destroy_node()
 
 if __name__ == '__main__':
     main()
