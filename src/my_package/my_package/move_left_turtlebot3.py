@@ -21,6 +21,7 @@ class TurningNode(Node):
         self.is_waiting = False
         self.turning_direction = 1
         self.initial_orientation = None
+        self.sayac = 0
 
     def odom_callback(self, msg):
         if self.is_turning:
@@ -33,6 +34,7 @@ class TurningNode(Node):
                 self.get_logger().info("Turning direction...")
                 self.is_waiting = False
                 self.turn_direction()
+             
 
     def turn(self, direction, angle):
         if not self.is_waiting:
@@ -43,6 +45,9 @@ class TurningNode(Node):
             self.publisher_.publish(msg)
             self.get_logger().info('Publishing: "%s"' % msg)
             self.is_waiting = True
+            self.sayac +=1
+            if self.sayac == 4:
+                self.sayac = 0
 
     def stop_turning(self):
         msg = Twist()
@@ -53,10 +58,24 @@ class TurningNode(Node):
         self.is_turning = False
 
     def turn_direction(self):
-        self.turn(self.turning_direction, math.radians(30))
-        self.get_logger().info("Turning direction...")
-        self.turning_direction *= -1
+        if self.sayac == 0:
+            self.turn(1, math.radians(30))
+            self.get_logger().info("Turning direction...")
 
+        if self.sayac == 1:
+            self.turn(-1, math.radians(0))
+            self.get_logger().info("Turning direction...")
+
+        if self.sayac == 2:
+            self.turn(-1, math.radians(30))
+            self.get_logger().info("Turning direction...")
+
+        if self.sayac == 3:
+            self.turn(1, math.radians(0))
+            self.get_logger().info("Turning direction...")
+
+
+        
     def save_initial_orientation(self, msg):
         if self.initial_orientation is None:
             self.initial_orientation = msg.pose.pose.orientation
@@ -86,3 +105,4 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
+
