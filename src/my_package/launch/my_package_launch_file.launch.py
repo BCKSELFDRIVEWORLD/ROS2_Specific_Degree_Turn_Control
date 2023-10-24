@@ -8,7 +8,7 @@ def generate_launch_description():
         Node(
             package='my_package',
             executable='rotate',
-            name='move_left_turtlebot3.py',
+            name='rotate.py',
             namespace='SR6T2',
             output='screen',)
     ])
